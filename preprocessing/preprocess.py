@@ -5,6 +5,7 @@ import spacy
 
 import re
 
+from gensim.corpora import Dictionary
 from num2words import num2words
 
 
@@ -28,7 +29,8 @@ class Preprocessor:
 
     def __init__(
             self, file_path, columns,
-            merge_noun_chunks=False, merge_entities=False):
+            merge_noun_chunks=False, merge_entities=False,
+            ngram=2):
 
         self._pipeline = spacy.load("en_core_web_md")
 
@@ -41,31 +43,43 @@ class Preprocessor:
             self._pipeline.add_pipe(ents_pipe)
             
         
-        self._raw_corpus = self._get_csv_contents(file_path, columns)
-        self._corpus = self._concat_raw_corpus()
-        self._tokens = self._tokenize()
-        self._ngram_corpus = self._generate_ngrams(n=3)
+        self._raw_text = self._get_csv_contents(file_path, columns)
+        self._joined_text = self._concat_raw_text()
+        
+        self._corpus = self._tokenize()
+        self._ngram_corpus = self._generate_ngrams(n=ngram)
+        #
+        self._dictionary = Dictionary(self._ngram_corpus)
+        self._bow_corpus = self._generate_bow()
+
+    @property
+    def bow_corpus(self):
+        return self._bow_corpus
 
     @property
     def corpus(self):
         return self._corpus
 
     @property
+    def dictionary(self):
+        return self._dictionary
+
+    @property
+    def joined_text(self):
+        return self._joined_text
+
+    @property
     def ngram_corpus(self):
         return self._ngram_corpus
 
     @property
-    def raw_corpus(self):
-        return self._raw_corpus
-
-    @property
-    def tokens(self):
-        return self._tokens
+    def raw_text(self):
+        return self._raw_text
 
 
-    def _concat_raw_corpus(self):
+    def _concat_raw_text(self):
         """
-        Concatenates raw_corpus columns into a single text.
+        Concatenates raw_text columns into a single text.
         The result will join all columns (given at init) 
         into a single string.
 
@@ -73,10 +87,10 @@ class Preprocessor:
             list: list with the result text in every entry.
         """
 
-        assert self.raw_corpus
+        assert self.raw_text
 
         corpus = []
-        for row in self.raw_corpus:
+        for row in self.raw_text:
             corpus.append(" ".join(row))
 
         return corpus
@@ -94,7 +108,7 @@ class Preprocessor:
 
         ngram_corpus = []
         doc_idx = -1
-        for document in self._tokens:
+        for document in self._corpus:
             ngram_corpus.append([])
             doc_idx += 1
             for i in range(len(document) - (n - 1)):
@@ -102,7 +116,19 @@ class Preprocessor:
 
         return ngram_corpus
 
-    def _get_csv_contents(self, file_path, columns, max_docs=10):
+    def _generate_bow(self):
+        """[summary]
+
+        Returns:
+            [type]: BOW representation of corpus.
+        """
+
+        # self._dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
+        bow_corpus = [self.dictionary.doc2bow(doc) for doc in self.ngram_corpus]
+
+        return bow_corpus
+
+    def _get_csv_contents(self, file_path, columns, max_docs=100):
         """
         Reads a csv file and its contents for desired columns.
 
@@ -116,7 +142,7 @@ class Preprocessor:
         """
 
         n_docs = 0
-        raw_corpus = []
+        raw_text = []
         column_indexes = []
         with open(file_path, "r") as data_file:
             csv_reader = csv.reader(data_file)
@@ -129,12 +155,12 @@ class Preprocessor:
 
             for row in csv_reader:
                 n_docs += 1
-                raw_corpus.append([row[i] for i in column_indexes])
+                raw_text.append([row[i] for i in column_indexes])
 
                 if n_docs >= max_docs:
                     break
 
-        return raw_corpus
+        return raw_text
 
     def _is_token_valid(self, token):
         """
@@ -179,7 +205,7 @@ class Preprocessor:
         """
 
         tokens = []
-        for text in self.corpus:
+        for text in self._joined_text:
             document = self._pipeline(text)
             
             tokens.append([
