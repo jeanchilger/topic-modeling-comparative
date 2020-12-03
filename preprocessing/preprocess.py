@@ -1,11 +1,11 @@
 import csv
-
 import spacy
 # spacy.cli.download("en_core_web_md")
-
 import re
 
 from gensim.corpora import Dictionary
+from gensim.models.phrases import Phrases, Phraser
+
 from num2words import num2words
 
 
@@ -25,6 +25,17 @@ class Preprocessor:
     Description
 
     Attributes:
+        raw_text:
+
+        joined_text:
+
+        corpus:
+
+        dictionary:
+
+        bag_of_words:
+
+        phrases:
     """
 
     def __init__(
@@ -33,7 +44,6 @@ class Preprocessor:
             ngram=2):
 
         self._pipeline = spacy.load("en_core_web_md")
-        self._ngram = ngram
 
         if merge_noun_chunks:
             noun_chunks_pipe = self._pipeline.create_pipe("merge_noun_chunks")
@@ -42,15 +52,17 @@ class Preprocessor:
         if merge_entities:
             ents_pipe = self._pipeline.create_pipe("merge_entities")
             self._pipeline.add_pipe(ents_pipe)
-            
+
+        self._use_phraser = not (merge_noun_chunks or merge_entities)
         
         self._raw_text = self._get_csv_contents(file_path, columns)
         self._joined_text = self._concat_raw_text()
-        self._corpus = self._tokenize()
 
-        self._ngram_corpus = None
+        self._corpus = self._tokenize()
+        if self._use_phraser:
+            self._corpus = self._detect_phrases(min_count=2)
+
         self._bag_of_words = None
-        self._bag_of_ngrams = None
 
     @property
     def bag_of_words(self):
@@ -59,14 +71,6 @@ class Preprocessor:
             self._bag_of_words = self._generate_bow()
 
         return self._bag_of_words
-
-    @property
-    def bag_of_ngrams(self):
-        if self._bag_of_ngrams is None:
-            self._ngram_dictionary = Dictionary(self.ngram_corpus)
-            self._bag_of_ngrams = self._generate_bag_of_ngrams()
-
-        return self._bag_of_ngrams
 
     @property
     def corpus(self):
@@ -79,13 +83,6 @@ class Preprocessor:
     @property
     def joined_text(self):
         return self._joined_text
-
-    @property
-    def ngram_corpus(self):
-        if self._ngram_corpus is None:
-            self._ngram_corpus = self._generate_ngrams(n=self._ngram)
-
-        return self._ngram_corpus
 
     @property
     def raw_text(self):
@@ -110,54 +107,42 @@ class Preprocessor:
 
         return corpus
 
-    def _generate_ngrams(self, n=2):
-        """[summary]
+    def _detect_phrases(self, min_count):
+        """
+        Performs the phrase (collocation) detection.
+        Detected bigrams are joined.
 
         Args:
-            n (int, optional): Size of the n-gram model.
-              Defaults to 2.
+            min_count (int): [description]
 
         Returns:
-            list: The n-gram model.
+            list: Tokens with joined detected phrases.
         """
 
-        ngram_corpus = []
-        doc_idx = -1
-        for document in self.corpus:
-            ngram_corpus.append([])
-            doc_idx += 1
-            for i in range(len(document) - (n - 1)):
-                ngram_corpus[doc_idx].append(" ".join(document[i:i + n]))
+        # connector_words
+        phrases = Phrases(self.corpus, min_count=min_count)
+        frozen_phrases = Phraser(phrases)
 
-        return ngram_corpus
+        return [frozen_phrases[token] for token in self.corpus]
 
     def _generate_bow(self):
-        """[summary]
+        """
+        Returns the BoW representation of inner corpus.
+        The dictionary is obtained based on this corpus
+        also.
 
         Returns:
-            [type]: BOW representation of corpus.
+            list: BoW representation of corpus.
         """
 
-        # self._dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
-        word_bag = [self.dictionary.doc2bow(doc) for doc in self.corpus]
+        bag_of_words = [self.dictionary.doc2bow(doc) for doc in self.corpus]
 
-        return word_bag
+        return bag_of_words
 
-    def _generate_bag_of_ngrams(self):
-        """[summary]
-
-        Returns:
-            [type]: BOW representation of corpus.
+    def _get_csv_contents(self, file_path, columns):
         """
-
-        # self._dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
-        ngram_bag = [self.dictionary.doc2bow(doc) for doc in self.ngram_corpus]
-
-        return ngram_bag
-
-    def _get_csv_contents(self, file_path, columns, max_docs=100):
-        """
-        Reads a csv file and its contents for desired columns.
+        Reads the contents from a csv file.
+        Only the given columns are read.
 
         Args:
             file_path (string): path to csv file.
@@ -165,7 +150,7 @@ class Preprocessor:
 
         Returns:
             list: returns a matrix, every row corresponding to
-                  a row from the file.
+              a row from the file.
         """
 
         n_docs = 0
@@ -220,7 +205,6 @@ class Preprocessor:
             lemma = " ".join(re.split(", ", num2words(lemma)))
 
         return lemma
-
 
     def _tokenize(self):
         """
