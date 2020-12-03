@@ -33,6 +33,7 @@ class Preprocessor:
             ngram=2):
 
         self._pipeline = spacy.load("en_core_web_md")
+        self._ngram = ngram
 
         if merge_noun_chunks:
             noun_chunks_pipe = self._pipeline.create_pipe("merge_noun_chunks")
@@ -45,16 +46,27 @@ class Preprocessor:
         
         self._raw_text = self._get_csv_contents(file_path, columns)
         self._joined_text = self._concat_raw_text()
-        
         self._corpus = self._tokenize()
-        self._ngram_corpus = self._generate_ngrams(n=ngram)
-        #
-        self._dictionary = Dictionary(self._ngram_corpus)
-        self._bow_corpus = self._generate_bow()
+
+        self._ngram_corpus = None
+        self._bag_of_words = None
+        self._bag_of_ngrams = None
 
     @property
-    def bow_corpus(self):
-        return self._bow_corpus
+    def bag_of_words(self):
+        if self._bag_of_words is None:
+            self._dictionary = Dictionary(self.corpus)
+            self._bag_of_words = self._generate_bow()
+
+        return self._bag_of_words
+
+    @property
+    def bag_of_ngrams(self):
+        if self._bag_of_ngrams is None:
+            self._ngram_dictionary = Dictionary(self.ngram_corpus)
+            self._bag_of_ngrams = self._generate_bag_of_ngrams()
+
+        return self._bag_of_ngrams
 
     @property
     def corpus(self):
@@ -70,6 +82,9 @@ class Preprocessor:
 
     @property
     def ngram_corpus(self):
+        if self._ngram_corpus is None:
+            self._ngram_corpus = self._generate_ngrams(n=self._ngram)
+
         return self._ngram_corpus
 
     @property
@@ -108,7 +123,7 @@ class Preprocessor:
 
         ngram_corpus = []
         doc_idx = -1
-        for document in self._corpus:
+        for document in self.corpus:
             ngram_corpus.append([])
             doc_idx += 1
             for i in range(len(document) - (n - 1)):
@@ -124,9 +139,21 @@ class Preprocessor:
         """
 
         # self._dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
-        bow_corpus = [self.dictionary.doc2bow(doc) for doc in self.ngram_corpus]
+        word_bag = [self.dictionary.doc2bow(doc) for doc in self.corpus]
 
-        return bow_corpus
+        return word_bag
+
+    def _generate_bag_of_ngrams(self):
+        """[summary]
+
+        Returns:
+            [type]: BOW representation of corpus.
+        """
+
+        # self._dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
+        ngram_bag = [self.dictionary.doc2bow(doc) for doc in self.ngram_corpus]
+
+        return ngram_bag
 
     def _get_csv_contents(self, file_path, columns, max_docs=100):
         """
