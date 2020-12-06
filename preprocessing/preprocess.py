@@ -153,7 +153,6 @@ class Preprocessor:
               a row from the file.
         """
 
-        n_docs = 0
         raw_text = []
         column_indexes = []
         with open(file_path, "r") as data_file:
@@ -166,11 +165,7 @@ class Preprocessor:
                 column_indexes.append(header.index(column))
 
             for row in csv_reader:
-                n_docs += 1
                 raw_text.append([row[i] for i in column_indexes])
-
-                if n_docs >= max_docs:
-                    break
 
         return raw_text
 
