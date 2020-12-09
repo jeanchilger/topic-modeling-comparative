@@ -41,9 +41,10 @@ class Preprocessor:
     def __init__(
             self, file_path, columns,
             merge_noun_chunks=False, merge_entities=False,
-            ngram=2):
+            ngram=2, keep_digits=False):
 
         self._pipeline = spacy.load("en_core_web_md")
+        self._keep_digits = keep_digits
 
         if merge_noun_chunks:
             noun_chunks_pipe = self._pipeline.create_pipe("merge_noun_chunks")
@@ -153,6 +154,10 @@ class Preprocessor:
               a row from the file.
         """
 
+        # For tests
+        n_docs = 20
+        idx = 0
+
         raw_text = []
         column_indexes = []
         with open(file_path, "r") as data_file:
@@ -165,6 +170,11 @@ class Preprocessor:
                 column_indexes.append(header.index(column))
 
             for row in csv_reader:
+                # For tests
+                idx += 1
+                if idx >= n_docs:
+                    break
+                
                 raw_text.append([row[i] for i in column_indexes])
 
         return raw_text
@@ -180,7 +190,8 @@ class Preprocessor:
             boolean: true if token is valid, false otherwise.
         """
 
-        return not token.is_stop and not token.is_punct
+        return not (token.is_stop or token.is_punct or \
+                token.is_space or (not self._keep_digits and token.is_digit))
 
     def _lemmatize(self, token):
         """
@@ -196,7 +207,7 @@ class Preprocessor:
 
         lemma = token.lemma_
 
-        if token.is_digit:
+        if self._keep_digits and token.is_digit:
             lemma = " ".join(re.split(", ", num2words(lemma)))
 
         return lemma

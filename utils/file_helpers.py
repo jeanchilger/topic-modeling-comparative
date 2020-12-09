@@ -1,5 +1,7 @@
 import csv
 
+from gensim.corpora import Dictionary
+
 def matrix_to_csv(matrix, output_file_path, header=None):
     """
     Writes the given matrix into an csv file.
@@ -21,4 +23,31 @@ def matrix_to_csv(matrix, output_file_path, header=None):
 
         for row in matrix:
             writer.writerow(row)
+
+def csv_tokens_to_bow(input_file_path):
+    """
+    Reads a csv file and returns its BoW representation.
+    Every column in the file must correspond to a token.
+
+    Args:
+        input_file_path (string): [description]
+        skip_header (bool, optional): [description]. Defaults to False.
+
+    Returns:
+        Dictionary, bow: 
+    """
+
+    tokenized_corpus = []
+
+    with open(input_file_path, "r") as src_csv:
+        reader = csv.reader(src_csv)
+
+        for row in reader:
+            tokenized_corpus.append(row)
+
+    dictionary = Dictionary(tokenized_corpus)
+    bag_of_words = [dictionary.doc2bow(doc) for doc in tokenized_corpus]
+
+    return dictionary, bag_of_words
+
 
