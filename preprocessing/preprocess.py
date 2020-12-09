@@ -5,8 +5,9 @@ import re
 
 from gensim.corpora import Dictionary
 from gensim.models.phrases import Phrases, Phraser
-
+from gensim.utils import simple_preprocess
 from num2words import num2words
+
 
 
 #################################################
@@ -155,8 +156,8 @@ class Preprocessor:
         """
 
         # For tests
-        n_docs = 20
-        idx = 0
+        # n_docs = 20
+        # idx = 0
 
         raw_text = []
         column_indexes = []
@@ -171,9 +172,9 @@ class Preprocessor:
 
             for row in csv_reader:
                 # For tests
-                idx += 1
-                if idx >= n_docs:
-                    break
+                # idx += 1
+                # if idx >= n_docs:
+                    # break
                 
                 raw_text.append([row[i] for i in column_indexes])
 
@@ -225,10 +226,12 @@ class Preprocessor:
         for text in self._joined_text:
             document = self._pipeline(text)
             
-            tokens.append([
+            preprocessed_doc = " ".join([
                 self._lemmatize(token)
                 for token in document 
                 if self._is_token_valid(token)
             ])
+
+            tokens.append(simple_preprocess(preprocessed_doc))
 
         return tokens

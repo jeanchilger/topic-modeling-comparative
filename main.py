@@ -1,30 +1,37 @@
 from model.nmf import NmfModel
 from preprocessing.preprocess import Preprocessor
-from sklearn.model_selection import GridSearchCV
 from utils.file_helpers import csv_tokens_to_bow
 
 # from utils.visualization import vis_topic_distribution
 
 # input_file_path = "data/preprocessed/both_merges.csv"
 
+parameters = {
+    "kappa": [0.4, 0.9, 1.5],
+    "minimum_probability": [0.005, 0.02, 0.1],
+    "normalize": [True, False],
+}
+
 processor = Preprocessor("data/news.csv",
         columns=["title", "description", "text"])
-
-# dictionary, bow_corpus = csv_tokens_to_bow(input_file_path)
 
 bow_corpus = processor.bag_of_words
 dictionary = processor.dictionary
 
-# model = NmfModel(bow_corpus, num_topics=25, dictionary=dictionary)
+for kappa in parameters["kappa"]:
+    for mp in parameters["minimum_probability"]:
+        for normalize in parameters["normalize"]:
+            model_name = "kappa={}, " + \
+                    "minimum_probability={}, " + \
+                    "normalize={}"
+            
+            model_name = model_name.format(kappa, mp, normalize)
+            
+            print(model_name)
+            model = NmfModel(
+                    bow_corpus, num_topics=25,
+                    kappa=kappa, minimum_probability=mp,
+                    normalize=normalize,
+                    dictionary=dictionary)
 
-
-
-print(dictionary.token2id["say"])
-# print(dictionary["say"])
-print(dictionary.doc2bow(["say"]))
-
-# print(processor.corpus[0])
-# print(processor.corpus[1])
-# for topic in model.model.show_topics():
-#     print(topic)
-# vis_topic_distribution(model.model, bow_corpus, dictionary)
+            model.save(model_name)
