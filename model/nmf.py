@@ -5,17 +5,26 @@ RANDOM_STATE=1
 class NmfModel:
 
     def __init__(
-            self, corpus, num_topics, dictionary=None, 
-            chunksize=1000, passes=200, kappa=1.0):
-        self._corpus = corpus
-        self._num_topics = num_topics
-        self._dictionary = dictionary
+            self, corpus=None, num_topics=10, dictionary=None, 
+                chunksize=1000, passes=200, kappa=1.0,
+                minimum_probability=0.01, normalize=False,
+                model_name=None):
 
-        self._model = Nmf(
-                corpus, num_topics=num_topics, 
-                id2word=dictionary, chunksize=chunksize,
-                passes=passes, kappa=kappa,
-                random_state=RANDOM_STATE)
+        if model_name is None:
+            self._corpus = corpus
+            self._num_topics = num_topics
+            self._dictionary = dictionary
+
+            self._model = Nmf(
+                    corpus, num_topics=num_topics, 
+                    id2word=dictionary, chunksize=chunksize,
+                    passes=passes, kappa=kappa,
+                    minimum_probability=minimum_probability,
+                    normalize=normalize,
+                    random_state=RANDOM_STATE)
+                
+        else:
+            self._model = Nmf.load("trained_models/" + model_name)
 
     @property
     def model(self):
@@ -34,3 +43,15 @@ class NmfModel:
             [type]: [description]
         """
         return self.model.get_document_topics(document)
+
+    def save(self, model_name):
+        """
+        Saves current model in trained_model folder.
+
+        Args:
+            model_name (string): name of model to be saved.
+        """
+
+        self.model.save("trained_models/" + model_name)
+
+    
