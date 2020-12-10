@@ -4,7 +4,7 @@ from utils.file_helpers import csv_tokens_to_bow
 
 from utils.visualization import vis_topic_distribution
 
-input_file_path = "data/preprocessed/only_phraser_with_digits.csv"
+input_file_path = "data/preprocessed/only_phraser.csv"
 
 parameters = {
     "kappa": [0.4, 0.9, 1.5],
@@ -27,9 +27,9 @@ for kappa in parameters["kappa"]:
             model_name = "kappa={}, " + \
                     "minimum_probability={}, " + \
                     "normalize={}"
-            
+
             model_name = model_name.format(kappa, mp, normalize)
-            
+
             print(model_name)
             model = NmfModel(
                     bow_corpus, num_topics=25,
@@ -38,3 +38,4 @@ for kappa in parameters["kappa"]:
                     dictionary=dictionary)
 
             model.save(model_name)
+            print("Done!\n")
