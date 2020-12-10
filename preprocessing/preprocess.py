@@ -7,13 +7,12 @@ from gensim.corpora import Dictionary
 from gensim.models.phrases import Phrases, Phraser
 from gensim.utils import simple_preprocess
 from num2words import num2words
-
-
+from utils.tools import strip_tags
 
 #################################################
 # Insights
 # 
-# - remove HTML tags;
+# - [X] remove HTML tags;
 # - [X] convert numbers to text;
 # - expand abbreviations;
 # - named-entity recognition (NER) ?
@@ -156,7 +155,7 @@ class Preprocessor:
         """
 
         # For tests
-        # n_docs = 20
+        # n_docs = 132
         # idx = 0
 
         raw_text = []
@@ -173,8 +172,11 @@ class Preprocessor:
             for row in csv_reader:
                 # For tests
                 # idx += 1
-                # if idx >= n_docs:
-                    # break
+                # if idx != n_docs:
+                #     continue
+
+                # if idx > n_docs:
+                #     break
                 
                 raw_text.append([row[i] for i in column_indexes])
 
@@ -191,7 +193,7 @@ class Preprocessor:
             boolean: true if token is valid, false otherwise.
         """
 
-        return not (token.is_stop or token.is_punct or \
+        return token.is_ascii and not (token.is_stop or token.is_punct or \
                 token.is_space or (not self._keep_digits and token.is_digit))
 
     def _lemmatize(self, token):
@@ -208,8 +210,21 @@ class Preprocessor:
 
         lemma = token.lemma_
 
+        # Removes comma from numbers
+        if "," in lemma:
+            lemma = re.sub(r"(\d),(\d)", r"\1\2", lemma)
+
+        # Adjust entities and noun phrases
+        if " " in lemma:
+            lemma = "_".join(simple_preprocess(lemma))
+
+        # Removes tags from text
+        if ">" in lemma or "<" in lemma:
+            lemma = strip_tags(lemma)
+
+        # Number to word
         if self._keep_digits and token.is_digit:
-            lemma = " ".join(re.split(", ", num2words(lemma)))
+            lemma = "_".join(re.split(", ", num2words(lemma)))
 
         return lemma
 
@@ -232,6 +247,7 @@ class Preprocessor:
                 if self._is_token_valid(token)
             ])
 
-            tokens.append(simple_preprocess(preprocessed_doc))
+            tokens.append(simple_preprocess(
+                    preprocessed_doc, deacc=True, min_len=3))
 
         return tokens
