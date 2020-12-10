@@ -1,10 +1,13 @@
+import sys
+sys.path.insert(0, sys.path[0] + "/..")
+
 from model.nmf import NmfModel
 from preprocessing.preprocess import Preprocessor
 from utils.file_helpers import csv_tokens_to_bow
 
 from utils.visualization import vis_topic_distribution
 
-input_file_path = "data/preprocessed/only_phraser.csv"
+input_file_path = "../data/preprocessed/only_phraser.csv"
 
 parameters = {
     "kappa": [0.4, 0.9, 1.5],
@@ -37,5 +40,5 @@ for kappa in parameters["kappa"]:
                     normalize=normalize,
                     dictionary=dictionary)
 
-            model.save(model_name)
+            model.save("../" + model_name)
             print("Done!\n")
