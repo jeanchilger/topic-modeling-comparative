@@ -64,7 +64,7 @@ def matrix_to_txt(matrix, output_file_path, join_columns=True):
     with open(output_file_path, "w") as dest_txt:
         for row in matrix:
             if join_columns:
-                dest_txt.write(" ".join(row) + "\n")
+                dest_txt.write(" ".join([str(item) for item in row]) + "\n")
 
             else:
                 dest_txt.write(row + "\n")
