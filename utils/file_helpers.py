@@ -4,7 +4,8 @@ from gensim.corpora import Dictionary
 
 def csv_tokens_to_bow(input_file_path):
     """
-    Reads a csv file and returns its BoW representation.
+    Reads a csv file and returns its BoW representation and 
+    the Dictionary used in its generation.
     Every column in the file must correspond to a token.
 
     Args:
@@ -29,7 +30,7 @@ def csv_tokens_to_bow(input_file_path):
 
     return dictionary, bag_of_words
 
-def matrix_to_csv(matrix, output_file_path, header=None):
+def matrix_to_csv(matrix, output_file_path):
     """
     Writes the given matrix into an csv file.
     Each row in matrix corresponds to a row in the
@@ -44,9 +45,6 @@ def matrix_to_csv(matrix, output_file_path, header=None):
 
     with open(output_file_path, "w") as dest_csv:
         writer = csv.writer(dest_csv)
-
-        if header:
-            writer.writerow(header)
 
         for row in matrix:
             writer.writerow(row)
