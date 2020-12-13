@@ -7,7 +7,7 @@ from gensim.corpora import Dictionary
 from gensim.models.phrases import Phrases, Phraser
 from gensim.utils import simple_preprocess
 from num2words import num2words
-from utils.tools import strip_tags
+from utils.tools import remove_tags_and_content
 
 #################################################
 # Insights
@@ -61,7 +61,7 @@ class Preprocessor:
 
         self._corpus = self._tokenize()
         if self._use_phraser:
-            self._corpus = self._detect_phrases(min_count=2)
+            self._corpus = self._detect_phrases(min_count=2, ngram=ngram)
 
         self._bag_of_words = None
 
@@ -69,6 +69,7 @@ class Preprocessor:
     def bag_of_words(self):
         if self._bag_of_words is None:
             self._dictionary = Dictionary(self.corpus)
+            self._dictionary.filter_extremes(no_above=0.6)
             self._bag_of_words = self._generate_bow()
 
         return self._bag_of_words
@@ -108,7 +109,7 @@ class Preprocessor:
 
         return corpus
 
-    def _detect_phrases(self, min_count):
+    def _detect_phrases(self, min_count, ngram=2):
         """
         Performs the phrase (collocation) detection.
         Detected bigrams are joined.
@@ -121,10 +122,15 @@ class Preprocessor:
         """
 
         # connector_words
-        phrases = Phrases(self.corpus, min_count=min_count)
-        frozen_phrases = Phraser(phrases)
+        phrased_corpus = self.corpus
 
-        return [frozen_phrases[token] for token in self.corpus]
+        for i in range(ngram - 1):
+            phrases = Phrases(phrased_corpus, min_count=min_count)
+            frozen_phrases = Phraser(phrases)
+
+            phrased_corpus = [frozen_phrases[token] for token in phrased_corpus]
+
+        return phrased_corpus
 
     def _generate_bow(self):
         """
@@ -155,7 +161,7 @@ class Preprocessor:
         """
 
         # For tests
-        # n_docs = 132
+        # n_docs = 36
         # idx = 0
 
         raw_text = []
@@ -239,7 +245,7 @@ class Preprocessor:
 
         tokens = []
         for text in self._joined_text:
-            document = self._pipeline(text)
+            document = self._pipeline(remove_tags_and_content(text))
             
             preprocessed_doc = " ".join([
                 self._lemmatize(token)
