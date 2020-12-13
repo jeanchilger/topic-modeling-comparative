@@ -24,6 +24,7 @@ def csv_tokens_to_bow(input_file_path):
             tokenized_corpus.append(row)
 
     dictionary = Dictionary(tokenized_corpus)
+    dictionary.filter_extremes(no_above=0.6)
     bag_of_words = [dictionary.doc2bow(doc) for doc in tokenized_corpus]
 
     return dictionary, bag_of_words

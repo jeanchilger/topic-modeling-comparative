@@ -1,3 +1,5 @@
+import re
+
 from io import StringIO
 from html.parser import HTMLParser
 
@@ -36,3 +38,9 @@ def strip_tags(text):
     html_stripper.feed(text)
 
     return html_stripper.get_data()
+
+def remove_tags_and_content(text):
+
+    regex = re.compile("<.+>")
+
+    return re.sub(regex, "", text)

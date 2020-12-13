@@ -14,8 +14,9 @@ input_file_path = "data/preprocessed/only_phraser_with_digits.csv"
 
 processor = Preprocessor("data/news.csv",
         columns=["title", "description", "text"],
-        keep_digits=True,
-        merge_entities=True)
+        # keep_digits=True,
+        # merge_entities=True,
+        )
 
 corpus = processor.corpus
 bow_corpus = processor.bag_of_words

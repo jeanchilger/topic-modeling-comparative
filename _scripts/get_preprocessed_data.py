@@ -5,47 +5,71 @@ from preprocessing.preprocess import Preprocessor
 from utils.file_helpers import matrix_to_csv
 from utils.file_helpers import matrix_to_txt
 
+# file_names = [
+#     "only_phraser",
+#     "only_phraser_with_digits",
+#     "merge_noun_chunks",
+#     "merge_entities",
+#     "both_merges",
+#     "both_merges_with_digits"
+# ]
+
+# preprocessors = [
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"]),
+
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"],
+#             keep_digits=True),
+
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"],
+#             merge_noun_chunks=True),
+
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"],
+#             merge_entities=True),
+
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"],
+#             merge_noun_chunks=True,
+#             merge_entities=True),
+    
+#     Preprocessor(
+#             "../data/news.csv",
+#             columns=["title", "description", "text"],
+#             merge_noun_chunks=True,
+#             merge_entities=True,
+#             keep_digits=True),
+# ]
+
 file_names = [
-    "only_phraser",
-    "only_phraser_with_digits",
-    "merge_noun_chunks",
-    "merge_entities",
-    "both_merges",
-    "both_merges_with_digits"
+    # "only_phraser_filtered_nohtml",
+    # "only_phraser_3_gram_nohtml",
+    "only_phraser_4_gram_nohtml",
+    # "both_merges_filtered_nohtml",
 ]
 
 preprocessors = [
-    Preprocessor(
-            "../data/news.csv",
-            columns=["title", "description", "text"]),
+    # Preprocessor(
+    #         "data/news.csv",
+    #         columns=["title", "description", "text"]),
 
     Preprocessor(
-            "../data/news.csv",
+            "data/news.csv",
             columns=["title", "description", "text"],
-            keep_digits=True),
+            ngram=4),
 
-    Preprocessor(
-            "../data/news.csv",
-            columns=["title", "description", "text"],
-            merge_noun_chunks=True),
-
-    Preprocessor(
-            "../data/news.csv",
-            columns=["title", "description", "text"],
-            merge_entities=True),
-
-    Preprocessor(
-            "../data/news.csv",
-            columns=["title", "description", "text"],
-            merge_noun_chunks=True,
-            merge_entities=True),
-    
-    Preprocessor(
-            "../data/news.csv",
-            columns=["title", "description", "text"],
-            merge_noun_chunks=True,
-            merge_entities=True,
-            keep_digits=True),
+    # Preprocessor(
+    #         "data/news.csv",
+    #         columns=["title", "description", "text"],
+    #         merge_entities=True,
+    #         merge_noun_chunks=True),
 ]
 
 for preprocessor, file_name in zip(preprocessors, file_names):
@@ -53,11 +77,11 @@ for preprocessor, file_name in zip(preprocessors, file_names):
 
     matrix_to_csv(
             preprocessor.corpus, 
-            "../data/preprocessed/" + file_name + ".csv")
+            "data/preprocessed/" + file_name + ".csv")
     
     matrix_to_csv(
             preprocessor.corpus, 
-            "../data/preprocessed/" + file_name + ".txt")
+            "data/preprocessed/" + file_name + ".txt")
 
     print("written successfully.")
     print()
