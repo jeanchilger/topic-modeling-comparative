@@ -67,11 +67,12 @@ Four models was selected and the coherece score was obtained for each one. The r
 
 | Model Name                                                               | Score               |
 |--------------------------------------------------------------------------|---------------------|
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_nohtml        | -1.152348349753828  |
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_3_gram_nohtml | -1.2311302074225625 |
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_4_gram_nohtml | -1.2672468412533457 |
-| kappa=0.4, minimum_probability=0.1, data_file=both_merges_nohtml         | -1.2395398559375161 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_nohtml        | -1.1551872156234722 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_3_gram_nohtml | -1.2333059023745476 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_4_gram_nohtml | -1.3600669505721164 |
+| kappa=0.4, minimum_probability=0.1, data_file=both_merges_nohtml         | -1.2068782531591495 |
 
+From these results, the first model on the table was chosen for the final topic distribution generation.
 
 <!-- 
 2
