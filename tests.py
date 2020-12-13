@@ -12,15 +12,20 @@ input_file_path = "data/preprocessed/only_phraser_with_digits.csv"
 #     "normalize": [True, False],
 # }
 
-processor = Preprocessor("data/news.csv",
-        columns=["title", "description", "text"],
-        # keep_digits=True,
-        # merge_entities=True,
-        )
+# processor = Preprocessor("data/news.csv",
+#         columns=["title", "description", "text"],
+#         # keep_digits=True,
+#         # merge_entities=True,
+#         )
 
-corpus = processor.corpus
-bow_corpus = processor.bag_of_words
-dictionary = processor.dictionary
+# corpus = processor.corpus
+# bow_corpus = processor.bag_of_words
+# dictionary = processor.dictionary
 
-print(len(corpus[0]))
-print(corpus[0])
+model = NmfModel(model_name="kappa=0.4, minimum_probability=0.1, data_file=both_merges_nohtml")
+
+print(model.model.print_topics(num_topics=25))
+
+# print(len(corpus[0]))
+# print(corpus[0])
+# 
