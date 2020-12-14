@@ -26,7 +26,7 @@ def format_stdout_string(
         underline (bool, optional): [description]. Defaults to False.
     """
 
-    _bright = 30 if bright else 0
+    _bright = 60 if bright else 0
 
     start = "\033[{}".format(COLOR_CODES[color] + _bright)
 
@@ -73,7 +73,6 @@ def error(text, bold=False):
     """
 
     print_color(text, color="red", bold=bold, bright=True)
-
 
 def info(text, bold=False):
     """
