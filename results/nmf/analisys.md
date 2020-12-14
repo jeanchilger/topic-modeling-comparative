@@ -65,14 +65,15 @@ The produced models was assembled by a permutation of the hyperparameters `kappa
 ## Coherence Score
 Four models was selected and the coherece score was obtained for each one. The result is given in the table below.
 
-| Model Name                                                               | Score               |
-|--------------------------------------------------------------------------|---------------------|
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_nohtml        | -1.1551872156234722 |
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_3_gram_nohtml | -1.2333059023745476 |
-| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_4_gram_nohtml | -1.3600669505721164 |
-| kappa=0.4, minimum_probability=0.1, data_file=both_merges_nohtml         | -1.2068782531591495 |
+| Model Name                                                                    | Score               |
+|-------------------------------------------------------------------------------|---------------------|
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_nohtml             | -1.1551872156234722 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_with_digits_nohtml | -1.1277404348612279 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_3_gram_nohtml      | -1.2333059023745476 |
+| kappa=0.4, minimum_probability=0.1, data_file=only_phraser_4_gram_nohtml      | -1.3600669505721164 |
+| kappa=0.4, minimum_probability=0.1, data_file=both_merges_nohtml              | -1.2068782531591495 |
 
-From these results, the first model on the table was chosen for the final topic distribution generation.
+From these results, the second model on the table was chosen for the final topic distribution generation.
 
 <!-- 
 2
