@@ -1,22 +1,22 @@
 import sys
 sys.path.insert(0, sys.path[0] + "/..")
 
-from model.nmf import NmfModel
+from models.nmf import NmfModel
 from preprocessing.preprocess import Preprocessor
 from utils.file_helpers import csv_tokens_to_bow
 
 from utils.visualization import vis_topic_distribution
 
 data_files = [
-    "only_phraser_3_gram_nohtml",
-    "only_phraser_4_gram_nohtml",
-    # "only_phraser_filtered_nohtml",
+    # "only_phraser_3_gram_nohtml",
+    # "only_phraser_4_gram_nohtml",
+    "only_phraser_with_digits_nohtml",
     # "both_merges_filtered_nohtml",
 ]
 
 parameters = {
-    "kappa": [0.4, 0.9],
-    "minimum_probability": [0.1, 0.5],
+    "kappa": [0.4, 0.1],
+    "minimum_probability": [0.1],
 }
 
 # processor = Preprocessor("data/news.csv",

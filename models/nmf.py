@@ -24,7 +24,7 @@ class NmfModel:
                     random_state=RANDOM_STATE)
                 
         else:
-            self._model = Nmf.load("trained_models/" + model_name)
+            self._model = Nmf.load(model_name)
 
     @property
     def model(self):
@@ -52,6 +52,6 @@ class NmfModel:
             model_name (string): name of model to be saved.
         """
 
-        self.model.save("trained_models/" + model_name)
+        self.model.save(model_name)
 
     

@@ -14,10 +14,11 @@ from utils.file_helpers import matrix_to_txt
 #     "both_merges_with_digits"
 # ]
 
-# preprocessors = [
-#     Preprocessor(
-#             "../data/news.csv",
-#             columns=["title", "description", "text"]),
+preprocessors = [
+    Preprocessor(
+            "data/news.csv",
+            columns=["title", "description", "text"],
+            keep_digits=True),
 
 #     Preprocessor(
 #             "../data/news.csv",
@@ -46,31 +47,31 @@ from utils.file_helpers import matrix_to_txt
 #             merge_noun_chunks=True,
 #             merge_entities=True,
 #             keep_digits=True),
-# ]
+]
 
 file_names = [
-    # "only_phraser_filtered_nohtml",
+    "only_phraser_with_digits_nohtml",
     # "only_phraser_3_gram_nohtml",
-    "only_phraser_4_gram_nohtml",
+    # "only_phraser_4_gram_nohtml",
     # "both_merges_filtered_nohtml",
 ]
 
-preprocessors = [
+# preprocessors = [
     # Preprocessor(
     #         "data/news.csv",
     #         columns=["title", "description", "text"]),
 
-    Preprocessor(
-            "data/news.csv",
-            columns=["title", "description", "text"],
-            ngram=4),
+    # Preprocessor(
+    #         "data/news.csv",
+    #         columns=["title", "description", "text"],
+    #         ngram=4),
 
     # Preprocessor(
     #         "data/news.csv",
     #         columns=["title", "description", "text"],
     #         merge_entities=True,
     #         merge_noun_chunks=True),
-]
+# ]
 
 for preprocessor, file_name in zip(preprocessors, file_names):
     print("writting {}...".format(file_name))

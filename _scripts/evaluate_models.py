@@ -9,18 +9,19 @@ from utils.console import format_stdout_string
 
 # List of preprocessed texts to be used
 preprocessed_corpus = [
-    "only_phraser_nohtml",
-    "only_phraser_3_gram_nohtml",
+    # "only_phraser_nohtml",
+    "only_phraser_with_digits_nohtml",
+    # "only_phraser_3_gram_nohtml",
     # "only_phraser_4_gram_nohtml",
-    "both_merges_nohtml",
+    # "both_merges_nohtml",
 ]
 
 # Configuration of each model to be used.
 # Every entry corresponds to the configuration of
 # a individual model.
 models_config = [
-    {"kappa": 0.4, "minimum_probability": 0.5},
-    {"kappa": 0.9, "minimum_probability": 0.1},
+    # {"kappa": 0.4, "minimum_probability": 0.5},
+    {"kappa": 0.1, "minimum_probability": 0.1},
 ]
 
 # Gets coherences
