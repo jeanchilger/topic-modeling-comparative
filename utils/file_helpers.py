@@ -67,3 +67,16 @@ def matrix_to_txt(matrix, output_file_path, join_columns=True):
 
             else:
                 dest_txt.write(row + "\n")
+
+def text_to_file(text, output_file_path):
+    """Writes a text to a file
+
+    Writes the given string to a file, without any formatting.
+
+    Args:
+        text (string): Text to be written.
+        output_file_path (string): Output file location.
+    """
+
+    with open(output_file_path, "w") as dest_file:
+        dest_file.write(text)

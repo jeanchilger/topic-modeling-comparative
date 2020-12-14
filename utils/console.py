@@ -59,4 +59,51 @@ def print_color(
             text, color=color, bold=bold, 
             underline=underline, bright=bright))
 
-    
+########################################
+# Quick access functions
+########################################
+
+def error(text, bold=False):
+    """
+    Prints red text.
+
+    Args:
+        text ([type]): [description]
+        bold (bool, optional): [description]. Defaults to True.
+    """
+
+    print_color(text, color="red", bold=bold, bright=True)
+
+
+def info(text, bold=False):
+    """
+    Prints cyan text.
+
+    Args:
+        text ([type]): [description]
+        bold (bool, optional): [description]. Defaults to True.
+    """
+
+    print_color(text, color="cyan", bold=bold, bright=True)
+
+def success(text, bold=False):
+    """
+    Prints green text.
+
+    Args:
+        text ([type]): [description]
+        bold (bool, optional): [description]. Defaults to True.
+    """
+
+    print_color(text, color="green", bold=bold, bright=True)
+
+def warning(text, bold=False):
+    """
+    Prints yellow text.
+
+    Args:
+        text ([type]): [description]
+        bold (bool, optional): [description]. Defaults to True.
+    """
+
+    print_color(text, color="yellow", bold=bold, bright=True)
