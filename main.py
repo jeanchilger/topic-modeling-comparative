@@ -59,7 +59,7 @@ for topic_dist in top_topics:
 
 top_topics = [topic_dist[1] for topic_dist in top_topics]
 
-matrix_to_txt(top_topics, os.path.join(output_dir, "topics.txt"))
+matrix_to_txt(top_topics, os.path.join(output_dir, "topics.txt"), join_columns=False)
 
 console.success("Done!\n")
 
@@ -71,5 +71,19 @@ coherence = coherence_score(
         dictionary=dictionary, coherence='u_mass')
 
 text_to_file(str(coherence), os.path.join(output_dir, "evaluation.txt"))
+
+console.success("Done!\n")
+
+# 
+console.info("Get most similar words to topic words...")
+
+word2vec_model = Word2VecModel(
+        sentences=corpus, vector_size=200, workers=4)
+
+for topic in topics:
+    console.error(str(topic))
+    console.warning("\n".join(
+            ["\t" + str(word) for word in word2vec_model.most_similar_to(topic)]))
+    print()
 
 console.success("Done!\n")

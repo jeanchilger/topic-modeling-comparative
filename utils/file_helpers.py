@@ -10,7 +10,6 @@ def csv_tokens_to_bow(input_file_path):
 
     Args:
         input_file_path (string): [description]
-        skip_header (bool, optional): [description]. Defaults to False.
 
     Returns:
         Dictionary, bow: 
@@ -29,6 +28,28 @@ def csv_tokens_to_bow(input_file_path):
     bag_of_words = [dictionary.doc2bow(doc) for doc in tokenized_corpus]
 
     return dictionary, bag_of_words
+
+def csv_tokens_to_list(input_file_path):
+    """
+    Reads a csv file and returns a list with tokens as its items.
+    Every column in the file must correspond to a token.
+
+    Args:
+        input_file_path (string): [description]
+
+    Returns:
+        list of (list of str): Tokenized corpus. 
+    """
+
+    tokenized_corpus = []
+
+    with open(input_file_path, "r") as src_csv:
+        reader = csv.reader(src_csv)
+
+        for row in reader:
+            tokenized_corpus.append(row)
+
+    return tokenized_corpus
 
 def matrix_to_csv(matrix, output_file_path):
     """
