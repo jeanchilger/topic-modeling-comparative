@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, sys.path[0] + "/..")
+sys.path.insert(0, sys.path[0] + "/../..")
 import utils.console as console
 
 from models.nmf import NmfModel

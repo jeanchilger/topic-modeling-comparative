@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, sys.path[0] + "/../..")
+sys.path.insert(0, sys.path[0] + "/..")
 import utils.console as console
 
 from preprocessing.preprocess import Preprocessor
@@ -77,11 +77,11 @@ for config, file_name in zip(preprocessor_configs, file_names):
     preprocessor = Preprocessor(**config)
 
     matrix_to_csv(
-            preprocessor.corpus, 
+            preprocessor.corpus,
             "data/preprocessed/" + file_name + ".csv")
-    
+
     matrix_to_csv(
-            preprocessor.corpus, 
+            preprocessor.corpus,
             "data/preprocessed/" + file_name + ".txt")
 
     console.success("written successfully.")

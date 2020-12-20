@@ -1,6 +1,6 @@
 from gensim.models.nmf import Nmf
 
-RANDOM_STATE=1
+RANDOM_STATE = 1
 
 class NmfModel:
 
