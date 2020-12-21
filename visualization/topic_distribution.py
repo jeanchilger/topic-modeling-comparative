@@ -1,9 +1,6 @@
 import numpy as np
 import pyLDAvis
 
-from matplotlib import pyplot as plt
-from sklearn.manifold import TSNE
-
 
 def vis_topic_distribution(model, corpus, dictionary):
     # corpus is bow_corpus
@@ -46,42 +43,3 @@ def vis_topic_distribution(model, corpus, dictionary):
 
     visualization_data = pyLDAvis.prepare(**data)
     pyLDAvis.show(visualization_data)
-
-
-def plot_words(
-        word_list, word2vec_model, save=False, 
-        file_path=None, **scatter_kwargs):
-    """Plots the given words using a scatter plot.
-
-    Args:
-        word_list (list of str): Words to be plotted.
-        word2vec_model (Word2VecModel): Trainde word2vec model object.
-    """
-
-    word_vectors = np.empty((0, word2vec_model.vector_size), dtype=np.float64)
-
-    for word in word_list:
-        print(word)
-        word_vectors = np.append(
-                word_vectors, 
-                np.array([word2vec_model.get_vector(word)]),
-                axis=0)
-
-    tsne = TSNE(n_components=2, random_state=0)
-    data = tsne.fit_transform(word_vectors)
-
-    x_values = data[:, 0]
-    y_values = data[:, 1]
-
-
-    plt.scatter(x_values, y_values, **scatter_kwargs)
-
-    for word, x, y in zip(word_list, x_values, y_values):
-        plt.annotate(word, xy=(x, y))
-
-    plt.show()
-
-    if save:
-        plt.savefig(fname=file_path)
-
-    exit()
