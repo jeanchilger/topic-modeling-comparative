@@ -17,7 +17,7 @@ data_files = [
 
 parameters = {
     "kappa": [0.09, 0.4, 0.9],
-    "minimum_probability": [0.005, 0.5],
+    "minimum_probability": [0.5, 1.5],
 }
 
 corpora = []

@@ -17,7 +17,7 @@ preprocessed_corpus = [
 
 parameters = {
     "kappa": [0.09, 0.4, 0.9],
-    "minimum_probability": [0.005, 0.5],
+    "minimum_probability": [0.5, 1.5],
 }
 
 
@@ -62,7 +62,7 @@ with open("results/nmf/models_coherence.csv", "w") as coherence_file:
                     kappa,
                     minimum_probability,
                     corpus_file,
-                    coherence_file,
+                    coherence,
                 ])
 
         
