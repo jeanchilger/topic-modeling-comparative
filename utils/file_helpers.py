@@ -101,3 +101,21 @@ def text_to_file(text, output_file_path):
 
     with open(output_file_path, "w") as dest_file:
         dest_file.write(text)
+
+def file_to_list(file_path):
+    """Reads a txt file into a list.
+
+    Args:
+        file_path (str): Path of file to be read.
+
+    Returns:
+        list of str: List with every element corresponding to a 
+            line in file.
+    """
+
+    contents = []
+    with open(file_path, "r") as src_file:
+        for row in src_file:
+            contents.append(row.strip())
+
+    return contents
