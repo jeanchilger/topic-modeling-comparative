@@ -48,7 +48,7 @@ class NmfModel:
         """
         return self.model.get_document_topics(document)
 
-    def get_common_topics(self, topn=10, thresh=3):
+    def get_common_topics(self, topn=10, thresh=3, formatted=False):
         """Returns the topics with most documents related to.
 
         Gets a list of topn topics ordered by the frequency of 
@@ -60,7 +60,7 @@ class NmfModel:
             thresh (int, optional): [description]. Defaults to 3.
 
         Returns:
-            [type]: [description]
+            list of (int, list of str): topn topics.
         """
 
         topic_counts = {}
@@ -91,7 +91,15 @@ class NmfModel:
             _topn += 1
             if _topn > topn:
                 break
-            top_topics.append(self.model.show_topic(topic_id))
+
+            topic = []
+            if formatted:
+                topic = [pair[0] for pair in self.model.show_topic(topic_id)]
+            
+            else:
+                topic = self.model.show_topic(topic_id)
+            
+            top_topics.append((topic_id, topic))
 
         return top_topics
 
