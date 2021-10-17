@@ -123,7 +123,7 @@ def plot_topic_words(
                 **plot_configs[topic_id])
 
         for word, x, y in zip(
-                word_list, x_values[start:end], 
+                word_list[start:end], x_values[start:end], 
                 y_values[start:end]):
             plt.annotate(word, xy=(x, y))
 
